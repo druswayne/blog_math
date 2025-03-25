@@ -8,7 +8,8 @@ from functools import wraps
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SelectField, BooleanField, SubmitField, FileField
 from wtforms.validators import DataRequired, Optional
-
+concurrent_path = os.path.dirname(__file__)
+os.chdir(concurrent_path)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
