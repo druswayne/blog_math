@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+
+{% macro render_comment(comment) %}
+    <div class="comment mb-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+                <i class="fas fa-user me-1"></i>{{ comment.author.username }}
+                <i class="fas fa-calendar-alt ms-2 me-1"></i>{{ comment.date_posted.strftime('%d.%m.%Y %H:%M') }}
+            </small>
+            {% if current_user.is_authenticated and current_user.is_admin %}
+                <form action="{{ url_for('delete_comment', comment_id=comment.id) }}" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этот комментарий?')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+        <p class="mb-2">{{ comment.content }}</p>
+        
+        {% if current_user.is_authenticated %}
+            <button class="btn btn-sm btn-outline-primary mb-2" onclick="showReplyForm({{ comment.id }})">
+                <i class="fas fa-reply me-1"></i>Ответить
+            </button>
+            <div id="reply-form-{{ comment.id }}" class="reply-form mb-3" style="display: none;">
+                <form action="{{ url_for('add_comment', post_id=post.id) }}" method="POST">
+                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                    <div class="mb-2">
+                        <textarea class="form-control" name="content" rows="2" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <i class="fas fa-paper-plane me-1"></i>Отправить ответ
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="hideReplyForm({{ comment.id }})">
+                        <i class="fas fa-times me-1"></i>Отмена
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+
+        {% if comment.replies %}
+            <div class="replies ms-4">
+                {% for reply in comment.replies|sort(attribute='date_posted') %}
+                    {{ render_comment(reply) }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <hr>
+    </div>
+{% endmacro %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card mb-4">
+                {% if post.image_path %}
+                    <img src="{{ url_for('static', filename=post.image_path) }}" class="card-img-top" alt="Изображение к записи" style="max-height: 400px; object-fit: contain;">
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="card-title">{{ post.title }}</h2>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <small class="text-muted">
+                            <i class="fas fa-user me-1"></i>{{ post.author.username }}
+                            <i class="fas fa-calendar-alt ms-2 me-1"></i>{{ post.date_posted.strftime('%d.%m.%Y %H:%M') }}
+                        </small>
+                        <div class="rating">
+                            <i class="fas fa-star text-warning"></i>
+                            <span>{{ "%.1f"|format(post.average_rating) }} ({{ post.ratings|length }} оценок)</span>
+                        </div>
+                    </div>
+                    {% if current_user.is_admin %}
+                        <div class="mb-3">
+                            <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i>Редактировать
+                            </a>
+                        </div>
+                    {% endif %}
+                    <p class="card-text">{{ post.content }}</p>
+                </div>
+            </div>
+
+            {% if current_user.is_authenticated %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Оценить запись</h5>
+                        <form action="{{ url_for('rate_post', post_id=post.id) }}" method="POST" class="mb-3">
+                            <div class="rating-buttons">
+                                {% for i in range(1, 6) %}
+                                    <button type="submit" name="rating" value="{{ i }}" class="btn btn-outline-warning me-2">
+                                        {{ i }} <i class="fas fa-star"></i>
+                                    </button>
+                                {% endfor %}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Добавить комментарий</h5>
+                        <form action="{{ url_for('add_comment', post_id=post.id) }}" method="POST">
+                            <div class="mb-3">
+                                <textarea class="form-control" name="content" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-comment me-2"></i>Отправить
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Комментарии ({{ post.comments|length }})</h5>
+                    {% if post.comments %}
+                        {% for comment in post.comments if not comment.parent_id %}
+                            {{ render_comment(comment) }}
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Пока нет комментариев. Будьте первым!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showReplyForm(commentId) {
+    document.getElementById('reply-form-' + commentId).style.display = 'block';
+}
+
+function hideReplyForm(commentId) {
+    document.getElementById('reply-form-' + commentId).style.display = 'none';
+}
+</script>
+{% endblock %} 

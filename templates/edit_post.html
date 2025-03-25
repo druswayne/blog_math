@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Редактирование записи</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Заголовок</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ post.title }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Содержание</label>
+                        <textarea class="form-control" id="content" name="content" rows="10" required>{{ post.content }}</textarea>
+                    </div>
+                    {% if post.image_path %}
+                        <div class="mb-3">
+                            <label class="form-label">Текущее изображение</label>
+                            <img src="{{ url_for('static', filename=post.image_path) }}" class="img-fluid mb-2" style="max-height: 200px;">
+                        </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Новое изображение (необязательно)</label>
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        <div class="form-text">Поддерживаемые форматы: PNG, JPG, JPEG, GIF. Максимальный размер: 16MB</div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Сохранить изменения
+                        </button>
+                        <a href="{{ url_for('post', post_id=post.id) }}" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
