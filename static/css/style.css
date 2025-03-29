@@ -16,21 +16,22 @@ body {
 
 .nav-link {
     color: #ecf0f1 !important;
-    transition: color 0.3s ease;
+    transition: none;
 }
 
 .nav-link:hover {
     color: #3498db !important;
+    transform: none;
 }
 
 .card {
     border: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: none;
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .btn-primary {
@@ -84,11 +85,13 @@ body {
     margin-right: 0.5rem;
     color: #2c3e50;
     text-decoration: none;
+    transition: none;
 }
 
 .tag:hover {
     background-color: #bdc3c7;
     color: #2c3e50;
+    transform: none;
 }
 
 /* Стили для форм */
@@ -152,9 +155,71 @@ body {
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     text-decoration: none;
+    transition: none;
 }
 
 .category-badge:hover {
     background-color: #2980b9;
     color: white;
+    transform: none;
+}
+
+.about-content {
+    line-height: 1.8;
+}
+
+.about-content h4 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.about-content ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.about-content ul li {
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.about-content ul li:before {
+    content: "•";
+    color: #3498db;
+    position: absolute;
+    left: 0;
+}
+
+.about-content .card-img-top {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.about-content .card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.about-content .card-title {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.about-content .card-subtitle {
+    color: #7f8c8d;
+}
+
+.about-content i {
+    color: #3498db;
+    width: 20px;
+    text-align: center;
+}
+
+.btn {
+    transition: none;
+}
+
+.btn:hover {
+    transform: none;
 } 

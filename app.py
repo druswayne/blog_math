@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, abort
+from flask import Flask, render_template, request, redirect, url_for, flash, abort, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from datetime import datetime
@@ -7,7 +7,8 @@ from werkzeug.utils import secure_filename
 from functools import wraps
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SelectField, BooleanField, SubmitField, FileField
-from wtforms.validators import DataRequired, Optional
+from wtforms.validators import DataRequired, Optional, Email
+from werkzeug.security import generate_password_hash, check_password_hash
 concurrent_path = os.path.dirname(__file__)
 os.chdir(concurrent_path)
 app = Flask(__name__)
@@ -95,6 +96,30 @@ post_tags = db.Table('post_tags',
     db.Column('post_id', db.Integer, db.ForeignKey('post.id'), primary_key=True),
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True)
 )
+
+class AuthorInfo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    position = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    education = db.Column(db.Text, nullable=False)
+    experience = db.Column(db.Text, nullable=False)
+    achievements = db.Column(db.Text, nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    image_path = db.Column(db.String(200))
+
+class AuthorInfoForm(FlaskForm):
+    name = StringField('ФИО', validators=[DataRequired()])
+    position = StringField('Должность', validators=[DataRequired()])
+    description = TextAreaField('Описание', validators=[DataRequired()])
+    education = TextAreaField('Образование', validators=[DataRequired()])
+    experience = TextAreaField('Опыт работы', validators=[DataRequired()])
+    achievements = TextAreaField('Достижения', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    phone = StringField('Телефон', validators=[DataRequired()])
+    image = FileField('Фото', validators=[Optional()])
+    submit = SubmitField('Сохранить')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -389,6 +414,76 @@ def delete_post(post_id):
     db.session.commit()
     flash('Запись успешно удалена!', 'success')
     return redirect(url_for('home'))
+
+@app.route('/about')
+def about():
+    author_info = AuthorInfo.query.first()
+    return render_template('about.html', title='Об авторе', author_info=author_info)
+
+@app.route('/about/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_about():
+    author_info = AuthorInfo.query.first()
+    if not author_info:
+        author_info = AuthorInfo(
+            name='Путято Андрей Викторович',
+            position='Учитель математики',
+            description='Здравствуйте! Я - учитель математики с многолетним опытом преподавания. Моя миссия - сделать математику доступной и интересной для каждого ученика.',
+            education='Высшее педагогическое образование\nСпециализация: математика и информатика',
+            experience='Преподавание математики в средней школе\nПодготовка учащихся к олимпиадам\nРазработка методических материалов',
+            achievements='Высшая квалификационная категория\nПобедитель конкурса "Учитель года"\nАвтор методических разработок',
+            email='example@email.com',
+            phone='+7 (XXX) XXX-XX-XX'
+        )
+        db.session.add(author_info)
+        db.session.commit()
+    
+    form = AuthorInfoForm()
+    if form.validate_on_submit():
+        try:
+            author_info.name = form.name.data
+            author_info.position = form.position.data
+            author_info.description = form.description.data
+            author_info.education = form.education.data
+            author_info.experience = form.experience.data
+            author_info.achievements = form.achievements.data
+            author_info.email = form.email.data
+            author_info.phone = form.phone.data
+            
+            if form.image.data:
+                file = form.image.data
+                if file and allowed_file(file.filename):
+                    # Удаляем старое изображение, если оно есть
+                    if author_info.image_path:
+                        old_image_path = os.path.join(app.config['UPLOAD_FOLDER'], author_info.image_path.split('/')[-1])
+                        if os.path.exists(old_image_path):
+                            os.remove(old_image_path)
+                    
+                    filename = secure_filename(file.filename)
+                    filename = f"author_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{filename}"
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    author_info.image_path = f"uploads/{filename}"
+            
+            db.session.commit()
+            flash('Информация об авторе успешно обновлена!', 'success')
+            return redirect(url_for('about'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Произошла ошибка при сохранении: {str(e)}', 'danger')
+            return redirect(url_for('edit_about'))
+    
+    elif request.method == 'GET':
+        form.name.data = author_info.name
+        form.position.data = author_info.position
+        form.description.data = author_info.description
+        form.education.data = author_info.education
+        form.experience.data = author_info.experience
+        form.achievements.data = author_info.achievements
+        form.email.data = author_info.email
+        form.phone.data = author_info.phone
+    
+    return render_template('edit_about.html', title='Редактировать информацию об авторе', form=form)
 
 class PostForm(FlaskForm):
     title = StringField('Заголовок', validators=[DataRequired()])
