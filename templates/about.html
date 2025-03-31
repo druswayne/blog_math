@@ -60,30 +60,44 @@
                         </ul>
                         
                         <h4 class="mt-4">Опыт работы</h4>
-                        <ul>
-                            {% if author_info %}
-                                {% for item in author_info.experience.split('\n') %}
-                                    <li>{{ item }}</li>
-                                {% endfor %}
-                            {% else %}
-                                <li>Преподавание математики в средней школе</li>
-                                <li>Подготовка учащихся к олимпиадам</li>
-                                <li>Разработка методических материалов</li>
-                            {% endif %}
-                        </ul>
+                        <div class="experience-container">
+                            <div class="experience-content collapsed">
+                                <ul>
+                                    {% if author_info %}
+                                        {% for item in author_info.experience.split('\n') %}
+                                            <li>{{ item }}</li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <li>Преподавание математики в средней школе</li>
+                                        <li>Подготовка учащихся к олимпиадам</li>
+                                        <li>Разработка методических материалов</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <button class="btn btn-link experience-toggle" type="button">
+                                <i class="fas fa-chevron-down"></i> Показать все
+                            </button>
+                        </div>
                         
                         <h4 class="mt-4">Достижения</h4>
-                        <ul>
-                            {% if author_info %}
-                                {% for item in author_info.achievements.split('\n') %}
-                                    <li>{{ item }}</li>
-                                {% endfor %}
-                            {% else %}
-                                <li>Высшая квалификационная категория</li>
-                                <li>Победитель конкурса "Учитель года"</li>
-                                <li>Автор методических разработок</li>
-                            {% endif %}
-                        </ul>
+                        <div class="achievements-container">
+                            <div class="achievements-content collapsed">
+                                <ul>
+                                    {% if author_info %}
+                                        {% for item in author_info.achievements.split('\n') %}
+                                            <li>{{ item }}</li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <li>Высшая квалификационная категория</li>
+                                        <li>Победитель конкурса "Учитель года"</li>
+                                        <li>Автор методических разработок</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <button class="btn btn-link achievements-toggle" type="button">
+                                <i class="fas fa-chevron-down"></i> Показать все
+                            </button>
+                        </div>
                         
                         <h4 class="mt-4">Контакты</h4>
                         <p>
@@ -107,4 +121,32 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработчик для секции достижений
+    const achievementsToggleButton = document.querySelector('.achievements-toggle');
+    const achievementsContent = document.querySelector('.achievements-content');
+    
+    if (achievementsToggleButton && achievementsContent) {
+        achievementsToggleButton.addEventListener('click', function() {
+            achievementsContent.classList.toggle('expanded');
+            achievementsToggleButton.classList.toggle('expanded');
+        });
+    }
+
+    // Обработчик для секции опыта работы
+    const experienceToggleButton = document.querySelector('.experience-toggle');
+    const experienceContent = document.querySelector('.experience-content');
+    
+    if (experienceToggleButton && experienceContent) {
+        experienceToggleButton.addEventListener('click', function() {
+            experienceContent.classList.toggle('expanded');
+            experienceToggleButton.classList.toggle('expanded');
+        });
+    }
+});
+</script>
 {% endblock %} 

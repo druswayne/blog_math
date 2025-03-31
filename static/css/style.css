@@ -264,4 +264,118 @@ body {
 
 .btn:hover {
     transform: none;
+}
+
+/* Стили для сворачиваемой секции достижений */
+.achievements-container {
+    position: relative;
+}
+
+.achievements-content {
+    max-height: 150px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.achievements-content.expanded {
+    max-height: 1000px;
+}
+
+.achievements-content::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(to bottom, transparent, var(--bg-white));
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.3s ease-out;
+}
+
+.achievements-content.expanded::after {
+    opacity: 0;
+}
+
+.achievements-toggle {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 0.5rem 0;
+    color: var(--primary-color);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.achievements-toggle:hover {
+    color: var(--primary-dark);
+    text-decoration: none;
+}
+
+.achievements-toggle i {
+    transition: transform 0.3s ease;
+}
+
+.achievements-toggle.expanded i {
+    transform: rotate(180deg);
+}
+
+/* Стили для сворачиваемой секции опыта работы */
+.experience-container {
+    position: relative;
+}
+
+.experience-content {
+    max-height: 150px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.experience-content.expanded {
+    max-height: 1000px;
+}
+
+.experience-content::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(to bottom, transparent, var(--bg-white));
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.3s ease-out;
+}
+
+.experience-content.expanded::after {
+    opacity: 0;
+}
+
+.experience-toggle {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 0.5rem 0;
+    color: var(--primary-color);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.experience-toggle:hover {
+    color: var(--primary-dark);
+    text-decoration: none;
+}
+
+.experience-toggle i {
+    transition: transform 0.3s ease;
+}
+
+.experience-toggle.expanded i {
+    transform: rotate(180deg);
 } 
