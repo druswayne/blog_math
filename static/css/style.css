@@ -1,69 +1,107 @@
+:root {
+    /* Основные цвета */
+    --primary-color: #3498db;
+    --primary-dark: #2980b9;
+    --secondary-color: #2c3e50;
+    --text-color: #2c3e50;
+    --text-light: #7f8c8d;
+    --text-white: #ecf0f1;
+    --bg-light: #f8f9fa;
+    --bg-white: #ffffff;
+    
+    /* Акцентные цвета */
+    --accent-yellow: #f1c40f;
+    --accent-gray: #bdc3c7;
+    --accent-light: #ecf0f1;
+    
+    /* Цвета для форм и интерактивных элементов */
+    --input-border: #3498db;
+    --input-shadow: rgba(52, 152, 219, 0.25);
+    --card-shadow: rgba(0, 0, 0, 0.05);
+    --card-shadow-hover: rgba(0, 0, 0, 0.1);
+
+    /* Шрифты */
+    --font-family-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-base: 1rem;
+    --font-size-sm: 0.875rem;
+    --font-size-lg: 1.25rem;
+    --font-size-xl: 1.5rem;
+    --font-size-2xl: 2rem;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: 600;
+    --line-height-base: 1.5;
+    --line-height-relaxed: 1.8;
+}
+
 body {
-    background-color: #f8f9fa;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-light);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
 }
 
 .navbar {
-    background-color: #2c3e50;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: var(--secondary-color);
+    box-shadow: 0 2px 4px var(--card-shadow-hover);
 }
 
 .navbar-brand {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #ecf0f1 !important;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-white) !important;
 }
 
 .nav-link {
-    color: #ecf0f1 !important;
+    color: var(--text-white) !important;
     transition: none;
 }
 
 .nav-link:hover {
-    color: #3498db !important;
+    color: var(--primary-color) !important;
     transform: none;
 }
 
 .card {
     border: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px var(--card-shadow);
     transition: none;
 }
 
 .card:hover {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px var(--card-shadow);
 }
 
 .btn-primary {
-    background-color: #3498db;
-    border-color: #3498db;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 .btn-primary:hover {
-    background-color: #2980b9;
-    border-color: #2980b9;
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
 }
 
 .footer {
-    background-color: #2c3e50;
-    color: #ecf0f1;
+    background-color: var(--secondary-color);
+    color: var(--text-white);
     padding: 2rem 0;
     margin-top: 3rem;
 }
 
 .author-info {
-    font-size: 0.9rem;
-    color: #ecf0f1;
+    font-size: var(--font-size-sm);
+    color: var(--text-white);
     text-align: center;
     margin-top: 0.5rem;
-    background-color: #2c3e50;
+    background-color: var(--secondary-color);
     padding: 0.5rem 0;
     margin-bottom: 1rem;
 }
 
 /* Стили для комментариев */
 .comment {
-    border-left: 3px solid #3498db;
+    border-left: 3px solid var(--primary-color);
     padding-left: 1rem;
     margin-bottom: 1rem;
 }
@@ -74,40 +112,40 @@ body {
 
 /* Стили для рейтинга */
 .rating {
-    color: #f1c40f;
+    color: var(--accent-yellow);
 }
 
 /* Стили для тегов */
 .tag {
-    background-color: #ecf0f1;
+    background-color: var(--accent-light);
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     margin-right: 0.5rem;
-    color: #2c3e50;
+    color: var(--text-color);
     text-decoration: none;
     transition: none;
 }
 
 .tag:hover {
-    background-color: #bdc3c7;
-    color: #2c3e50;
+    background-color: var(--accent-gray);
+    color: var(--text-color);
     transform: none;
 }
 
 /* Стили для форм */
 .form-control:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    border-color: var(--input-border);
+    box-shadow: 0 0 0 0.2rem var(--input-shadow);
 }
 
 /* Стили для пагинации */
 .pagination .page-link {
-    color: #3498db;
+    color: var(--primary-color);
 }
 
 .pagination .page-item.active .page-link {
-    background-color: #3498db;
-    border-color: #3498db;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 /* Стили для изображений в постах */
@@ -119,7 +157,7 @@ body {
 
 /* Стили для предпросмотра */
 .preview {
-    background-color: #f8f9fa;
+    background-color: var(--bg-light);
     padding: 1rem;
     border-radius: 0.25rem;
     margin-top: 1rem;
@@ -129,19 +167,19 @@ body {
 .alert {
     border: none;
     border-radius: 0.25rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px var(--card-shadow-hover);
 }
 
 /* Стили для кнопок действий */
 .btn-action {
     padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
 }
 
 /* Стили для метаданных поста */
 .post-meta {
-    color: #7f8c8d;
-    font-size: 0.875rem;
+    color: var(--text-light);
+    font-size: var(--font-size-sm);
 }
 
 .post-meta i {
@@ -150,8 +188,8 @@ body {
 
 /* Стили для категорий */
 .category-badge {
-    background-color: #3498db;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-white);
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     text-decoration: none;
@@ -159,18 +197,20 @@ body {
 }
 
 .category-badge:hover {
-    background-color: #2980b9;
-    color: white;
+    background-color: var(--primary-dark);
+    color: var(--text-white);
     transform: none;
 }
 
 .about-content {
-    line-height: 1.8;
+    line-height: var(--line-height-relaxed);
 }
 
 .about-content h4 {
-    color: #2c3e50;
+    color: var(--text-color);
     margin-bottom: 1rem;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
 }
 
 .about-content ul {
@@ -186,32 +226,34 @@ body {
 
 .about-content ul li:before {
     content: "•";
-    color: #3498db;
+    color: var(--primary-color);
     position: absolute;
     left: 0;
 }
 
 .about-content .card-img-top {
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px var(--card-shadow-hover);
 }
 
 .about-content .card {
     border: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px var(--card-shadow);
 }
 
 .about-content .card-title {
-    color: #2c3e50;
-    font-weight: 600;
+    color: var(--text-color);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-xl);
 }
 
 .about-content .card-subtitle {
-    color: #7f8c8d;
+    color: var(--text-light);
+    font-size: var(--font-size-base);
 }
 
 .about-content i {
-    color: #3498db;
+    color: var(--primary-color);
     width: 20px;
     text-align: center;
 }

@@ -1,0 +1,110 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                {% if author_info and author_info.image_path %}
+                    <img src="{{ url_for('static', filename=author_info.image_path) }}" class="card-img-top" alt="Фото автора">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/default_author.jpg') }}" class="card-img-top" alt="Фото автора">
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                        <div class="text-end mb-3">
+                            <a href="{{ url_for('edit_about') }}" class="btn btn-primary">
+                                <i class="fas fa-edit me-1"></i>Редактировать
+                            </a>
+                        </div>
+                    {% endif %}
+                    
+                    <h1 class="card-title">
+                        {% if author_info %}
+                            {{ author_info.name }}
+                        {% else %}
+                            Путято Андрей Викторович
+                        {% endif %}
+                    </h1>
+                    <h5 class="card-subtitle mb-3 text-muted">
+                        {% if author_info %}
+                            {{ author_info.position }}
+                        {% else %}
+                            Учитель математики
+                        {% endif %}
+                    </h5>
+                    
+                    <div class="about-content">
+                        <p>
+                            {% if author_info %}
+                                {{ author_info.description }}
+                            {% else %}
+                                Здравствуйте! Я - учитель математики с многолетним опытом преподавания. Моя миссия - сделать математику доступной и интересной для каждого ученика.
+                            {% endif %}
+                        </p>
+                        
+                        <h4 class="mt-4">Образование</h4>
+                        <ul>
+                            {% if author_info %}
+                                {% for item in author_info.education.split('\n') %}
+                                    <li>{{ item }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <li>Высшее педагогическое образование</li>
+                                <li>Специализация: математика и информатика</li>
+                            {% endif %}
+                        </ul>
+                        
+                        <h4 class="mt-4">Опыт работы</h4>
+                        <ul>
+                            {% if author_info %}
+                                {% for item in author_info.experience.split('\n') %}
+                                    <li>{{ item }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <li>Преподавание математики в средней школе</li>
+                                <li>Подготовка учащихся к олимпиадам</li>
+                                <li>Разработка методических материалов</li>
+                            {% endif %}
+                        </ul>
+                        
+                        <h4 class="mt-4">Достижения</h4>
+                        <ul>
+                            {% if author_info %}
+                                {% for item in author_info.achievements.split('\n') %}
+                                    <li>{{ item }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <li>Высшая квалификационная категория</li>
+                                <li>Победитель конкурса "Учитель года"</li>
+                                <li>Автор методических разработок</li>
+                            {% endif %}
+                        </ul>
+                        
+                        <h4 class="mt-4">Контакты</h4>
+                        <p>
+                            <i class="fas fa-envelope me-2"></i>Email: 
+                            {% if author_info %}
+                                {{ author_info.email }}
+                            {% else %}
+                                example@email.com
+                            {% endif %}
+                            <br>
+                            <i class="fas fa-phone me-2"></i>Телефон: 
+                            {% if author_info %}
+                                {{ author_info.phone }}
+                            {% else %}
+                                +7 (XXX) XXX-XX-XX
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
