@@ -1,19 +1,19 @@
 :root {
     /* Основные цвета */
-    --primary-color: #3498db;
-    --primary-dark: #2980b9;
-    --secondary-color: #2c3e50;
-    --text-color: #2c3e50;
-    --text-light: #7f8c8d;
-    --text-white: #ecf0f1;
-    --bg-light: #f8f9fa;
-    --bg-white: #ffffff;
-    
+  --primary-color: #546e7a; /* Серо-голубой */
+    --primary-dark: #455a64; /* Темно-серо-голубой */
+    --secondary-color: #29434e; /* Очень темный серо-голубой */
+    --text-color: #263238; /* Темно-серый */
+    --text-light: #90a4ae; /* Светло-серо-голубой */
+    --text-white: #eceff1; /* Очень светлый серо-голубой */
+    --bg-light: #f5f7fa; /* Почти белый с голубым оттенком */
+    --bg-white: #ffffff; /* Белый */
+
     /* Акцентные цвета */
-    --accent-yellow: #f1c40f;
-    --accent-gray: #bdc3c7;
-    --accent-light: #ecf0f1;
-    
+    --accent-yellow: #78909c; /* Серо-голубой вместо желтого */
+    --accent-gray: #b0bec5; /* Светло-серо-голубой */
+    --accent-light: #e2f1f8; /* Очень светлый голубой */
+
     /* Цвета для форм и интерактивных элементов */
     --input-border: #3498db;
     --input-shadow: rgba(52, 152, 219, 0.25);
@@ -378,4 +378,13 @@ body {
 
 .experience-toggle.expanded i {
     transform: rotate(180deg);
+}
+
+/* Стили для логотипа сайта */
+.site-logo {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.5rem;
 } 
