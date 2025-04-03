@@ -387,4 +387,63 @@ body {
     display: inline-block;
     vertical-align: middle;
     margin-right: 0.5rem;
+}
+
+/* Стили для рейтинга */
+.rating-stars {
+    display: inline-flex;
+    gap: 8px;
+}
+
+.rating-stars input[type="radio"] {
+    display: none;
+}
+
+.rating-stars label {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 2px;
+    position: relative;
+}
+
+.rating-stars label img {
+    opacity: 0.5;
+    transition: all 0.2s ease;
+    transform-origin: center;
+}
+
+.rating-stars input[type="radio"]:checked ~ label img {
+    opacity: 0.5;
+}
+
+.rating-stars input[type="radio"]:checked + label img {
+    opacity: 1;
+    filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.7));
+}
+
+.rating-stars label:hover img {
+    opacity: 1;
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.9)) brightness(1.2);
+}
+
+.rating-stars label:active img {
+    transform: scale(0.95);
+}
+
+/* Стили для иконок в кнопках */
+.btn img {
+    vertical-align: text-bottom;
+    margin-right: 4px;
+}
+
+/* Стили для отображения рейтинга на главной странице */
+.badge img {
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+.badge.bg-light {
+    padding: 4px 8px;
+    font-size: 1rem;
 } 

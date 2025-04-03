@@ -86,13 +86,14 @@
                                     <span class="text-muted me-2">
                                         <i class="fas fa-comments me-1"></i>{{ post.comments|length }}
                                     </span>
-                                    <span class="rating">
-                                        <i class="fas fa-star me-1"></i>{{ "%.1f"|format(post.average_rating) }}
+                                    <span class="badge bg-light text-dark me-2">
+                                        <img src="{{ url_for('static', filename='images/star.svg') }}" alt="Рейтинг" width="30" height="30" class="me-1">
+                                        {{ "%.1f"|format(post.average_rating) }}
                                     </span>
                                     {% if current_user.is_authenticated and current_user.is_admin %}
-                                        <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST" class="d-inline ms-2">
-                                            <button type="submit" class="btn btn-danger btn-action" onclick="return confirm('Вы уверены, что хотите удалить эту запись?')">
-                                                <i class="fas fa-trash"></i>
+                                        <form action="{{ url_for('delete_post', post_id=post.id) }}" method="post" class="d-inline" onsubmit="return confirm('Вы уверены, что хотите удалить этот пост?');">
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <img src="{{ url_for('static', filename='images/trash.svg') }}" alt="Удалить" width="16" height="16">
                                             </button>
                                         </form>
                                     {% endif %}
