@@ -104,10 +104,20 @@ class AuthorInfo(db.Model):
     description = db.Column(db.Text, nullable=False)
     education = db.Column(db.Text, nullable=False)
     experience = db.Column(db.Text, nullable=False)
-    achievements = db.Column(db.Text, nullable=False)
+    achievements = db.relationship('Achievement', backref='author_info', lazy=True, cascade='all, delete-orphan')
     email = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
     image_path = db.Column(db.String(200))
+
+class Achievement(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    year = db.Column(db.String(50), nullable=False)  # в формате "2024/2025 учебний год"
+    title = db.Column(db.String(200), nullable=False)
+    result = db.Column(db.String(200), nullable=False)
+    author_info_id = db.Column(db.Integer, db.ForeignKey('author_info.id'), nullable=False)
+    
+    def __repr__(self):
+        return f"{self.year}, {self.title}, {self.result}"
 
 class AuthorInfoForm(FlaskForm):
     name = StringField('ФИО', validators=[DataRequired()])
@@ -115,11 +125,16 @@ class AuthorInfoForm(FlaskForm):
     description = TextAreaField('Описание', validators=[DataRequired()])
     education = TextAreaField('Образование', validators=[DataRequired()])
     experience = TextAreaField('Опыт работы', validators=[DataRequired()])
-    achievements = TextAreaField('Достижения', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     phone = StringField('Телефон', validators=[DataRequired()])
     image = FileField('Фото', validators=[Optional()])
     submit = SubmitField('Сохранить')
+
+class AchievementForm(FlaskForm):
+    year = StringField('Учебный год', validators=[DataRequired()])
+    title = StringField('Название', validators=[DataRequired()])
+    result = StringField('Результат', validators=[DataRequired()])
+    submit = SubmitField('Добавить достижение')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -418,7 +433,8 @@ def delete_post(post_id):
 @app.route('/about')
 def about():
     author_info = AuthorInfo.query.first()
-    return render_template('about.html', title='Об авторе', author_info=author_info)
+    achievements = Achievement.query.filter_by(author_info_id=author_info.id if author_info else None).all()
+    return render_template('about.html', author_info=author_info)
 
 @app.route('/about/edit', methods=['GET', 'POST'])
 @login_required
@@ -432,7 +448,6 @@ def edit_about():
             description='Здравствуйте! Я - учитель математики с многолетним опытом преподавания. Моя миссия - сделать математику доступной и интересной для каждого ученика.',
             education='Высшее педагогическое образование\nСпециализация: математика и информатика',
             experience='Преподавание математики в средней школе\nПодготовка учащихся к олимпиадам\nРазработка методических материалов',
-            achievements='Высшая квалификационная категория\nПобедитель конкурса "Учитель года"\nАвтор методических разработок',
             email='example@email.com',
             phone='+7 (XXX) XXX-XX-XX'
         )
@@ -440,14 +455,15 @@ def edit_about():
         db.session.commit()
     
     form = AuthorInfoForm()
-    if form.validate_on_submit():
+    achievement_form = AchievementForm()
+    
+    if form.validate_on_submit() and request.form.get('form_type') == 'author_info':
         try:
             author_info.name = form.name.data
             author_info.position = form.position.data
             author_info.description = form.description.data
             author_info.education = form.education.data
             author_info.experience = form.experience.data
-            author_info.achievements = form.achievements.data
             author_info.email = form.email.data
             author_info.phone = form.phone.data
             
@@ -467,10 +483,27 @@ def edit_about():
             
             db.session.commit()
             flash('Информация об авторе успешно обновлена!', 'success')
-            return redirect(url_for('about'))
+            return redirect(url_for('edit_about'))
         except Exception as e:
             db.session.rollback()
             flash(f'Произошла ошибка при сохранении: {str(e)}', 'danger')
+            return redirect(url_for('edit_about'))
+            
+    elif achievement_form.validate_on_submit() and request.form.get('form_type') == 'achievement':
+        try:
+            achievement = Achievement(
+                year=achievement_form.year.data,
+                title=achievement_form.title.data,
+                result=achievement_form.result.data,
+                author_info_id=author_info.id
+            )
+            db.session.add(achievement)
+            db.session.commit()
+            flash('Достижение успешно добавлено!', 'success')
+            return redirect(url_for('edit_about'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Произошла ошибка при добавлении достижения: {str(e)}', 'danger')
             return redirect(url_for('edit_about'))
     
     elif request.method == 'GET':
@@ -479,11 +512,21 @@ def edit_about():
         form.description.data = author_info.description
         form.education.data = author_info.education
         form.experience.data = author_info.experience
-        form.achievements.data = author_info.achievements
         form.email.data = author_info.email
         form.phone.data = author_info.phone
     
-    return render_template('edit_about.html', title='Редактировать информацию об авторе', form=form)
+    achievements = Achievement.query.filter_by(author_info_id=author_info.id).all()
+    return render_template('edit_about.html', title='Редактировать информацию об авторе', form=form, achievement_form=achievement_form, achievements=achievements)
+
+@app.route('/achievement/<int:achievement_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_achievement(achievement_id):
+    achievement = Achievement.query.get_or_404(achievement_id)
+    db.session.delete(achievement)
+    db.session.commit()
+    flash('Достижение успешно удалено!', 'success')
+    return redirect(url_for('edit_about'))
 
 class PostForm(FlaskForm):
     title = StringField('Заголовок', validators=[DataRequired()])
@@ -515,6 +558,23 @@ def init_categories():
     
     db.session.commit()
 
+def init_achievements():
+    author_info = AuthorInfo.query.first()
+    if author_info and not author_info.achievements:
+        sample_achievements = [
+            {'year': '2024/2025 учебний год', 'title': 'Подготовка призера олимпиады', 'result': '2 место на городской олимпиаде'},
+            {'year': '2024/2025 учебний год', 'title': 'Разработка учебных материалов', 'result': 'Опубликовано в сборнике методических работ'},
+            {'year': '2023/2024 учебний год', 'title': 'Конкурс "Учитель года"', 'result': 'Победитель в номинации "Инновации"'},
+            {'year': '2023/2024 учебний год', 'title': 'Конференция педагогов', 'result': 'Выступление с докладом'},
+            {'year': '2022/2023 учебний год', 'title': 'Повышение квалификации', 'result': 'Получение высшей категории'}
+        ]
+        
+        for achievement_data in sample_achievements:
+            achievement = Achievement(author_info_id=author_info.id, **achievement_data)
+            db.session.add(achievement)
+        
+        db.session.commit()
+
 @app.route('/static/<path:filename>')
 def serve_static(filename):
     return send_from_directory('static', filename)
@@ -524,4 +584,5 @@ if __name__ == '__main__':
         db.create_all()
         create_admin()
         init_categories()
+        init_achievements()
     app.run(debug=True) 
