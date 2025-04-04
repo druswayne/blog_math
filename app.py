@@ -114,6 +114,7 @@ class Achievement(db.Model):
     year = db.Column(db.String(50), nullable=False)  # в формате "2024/2025 учебний год"
     title = db.Column(db.String(200), nullable=False)
     result = db.Column(db.String(200), nullable=False)
+    is_personal = db.Column(db.Boolean, default=True)  # True - личное достижение, False - достижение учащихся
     author_info_id = db.Column(db.Integer, db.ForeignKey('author_info.id'), nullable=False)
     
     def __repr__(self):
@@ -134,6 +135,7 @@ class AchievementForm(FlaskForm):
     year = StringField('Учебный год', validators=[DataRequired()])
     title = StringField('Название', validators=[DataRequired()])
     result = StringField('Результат', validators=[DataRequired()])
+    is_personal = BooleanField('Личное достижение учителя')
     submit = SubmitField('Добавить достижение')
 
 @login_manager.user_loader
@@ -495,6 +497,7 @@ def edit_about():
                 year=achievement_form.year.data,
                 title=achievement_form.title.data,
                 result=achievement_form.result.data,
+                is_personal=achievement_form.is_personal.data,
                 author_info_id=author_info.id
             )
             db.session.add(achievement)
@@ -562,11 +565,12 @@ def init_achievements():
     author_info = AuthorInfo.query.first()
     if author_info and not author_info.achievements:
         sample_achievements = [
-            {'year': '2024/2025 учебний год', 'title': 'Подготовка призера олимпиады', 'result': '2 место на городской олимпиаде'},
-            {'year': '2024/2025 учебний год', 'title': 'Разработка учебных материалов', 'result': 'Опубликовано в сборнике методических работ'},
-            {'year': '2023/2024 учебний год', 'title': 'Конкурс "Учитель года"', 'result': 'Победитель в номинации "Инновации"'},
-            {'year': '2023/2024 учебний год', 'title': 'Конференция педагогов', 'result': 'Выступление с докладом'},
-            {'year': '2022/2023 учебний год', 'title': 'Повышение квалификации', 'result': 'Получение высшей категории'}
+            {'year': '2024/2025 учебний год', 'title': 'Подготовка призера олимпиады', 'result': '2 место на городской олимпиаде', 'is_personal': False},
+            {'year': '2024/2025 учебний год', 'title': 'Разработка учебных материалов', 'result': 'Опубликовано в сборнике методических работ', 'is_personal': True},
+            {'year': '2023/2024 учебний год', 'title': 'Конкурс "Учитель года"', 'result': 'Победитель в номинации "Инновации"', 'is_personal': True},
+            {'year': '2023/2024 учебний год', 'title': 'Конференция педагогов', 'result': 'Выступление с докладом', 'is_personal': True},
+            {'year': '2022/2023 учебний год', 'title': 'Повышение квалификации', 'result': 'Получение высшей категории', 'is_personal': True},
+            {'year': '2022/2023 учебний год', 'title': 'Всероссийская олимпиада школьников', 'result': 'Учащийся стал призером регионального этапа', 'is_personal': False}
         ]
         
         for achievement_data in sample_achievements:

@@ -107,6 +107,7 @@
                                     <th>Учебный год</th>
                                     <th>Название</th>
                                     <th>Результат</th>
+                                    <th>Тип</th>
                                     <th>Действия</th>
                                 </tr>
                             </thead>
@@ -117,6 +118,13 @@
                                     <td>{{ achievement.title }}</td>
                                     <td>{{ achievement.result }}</td>
                                     <td>
+                                        {% if achievement.is_personal %}
+                                            <span class="badge bg-primary">Личное</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Учащиеся</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
                                         <form action="{{ url_for('delete_achievement', achievement_id=achievement.id) }}" method="POST" style="display: inline;">
                                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены, что хотите удалить это достижение?');">
                                                 <i class="fas fa-trash"></i>
@@ -126,7 +134,7 @@
                                 </tr>
                                 {% else %}
                                 <tr>
-                                    <td colspan="4" class="text-center">Нет добавленных достижений</td>
+                                    <td colspan="5" class="text-center">Нет добавленных достижений</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -139,7 +147,7 @@
                         <input type="hidden" name="form_type" value="achievement">
                         
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     {{ achievement_form.year.label(class="form-label") }}
                                     {{ achievement_form.year(class="form-control" + (" is-invalid" if achievement_form.year.errors else ""), placeholder="2024/2025 учебний год") }}
@@ -148,7 +156,7 @@
                                     {% endfor %}
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     {{ achievement_form.title.label(class="form-label") }}
                                     {{ achievement_form.title(class="form-control" + (" is-invalid" if achievement_form.title.errors else "")) }}
@@ -157,11 +165,20 @@
                                     {% endfor %}
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     {{ achievement_form.result.label(class="form-label") }}
                                     {{ achievement_form.result(class="form-control" + (" is-invalid" if achievement_form.result.errors else "")) }}
                                     {% for error in achievement_form.result.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <div class="mb-3 form-check">
+                                    {{ achievement_form.is_personal(class="form-check-input") }}
+                                    {{ achievement_form.is_personal.label(class="form-check-label") }}
+                                    {% for error in achievement_form.is_personal.errors %}
                                         <div class="invalid-feedback">{{ error }}</div>
                                     {% endfor %}
                                 </div>

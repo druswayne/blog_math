@@ -95,7 +95,14 @@
                                         <ul>
                                             {% for achievement in author_info.achievements %}
                                                 {% if achievement.year == year %}
-                                                    <li><strong>{{ achievement.title }}</strong> - {{ achievement.result }}</li>
+                                                    <li>
+                                                        <strong>{{ achievement.title }}</strong> - {{ achievement.result }}
+                                                        {% if achievement.is_personal %}
+                                                            <span class="badge bg-primary">Личное</span>
+                                                        {% else %}
+                                                            <span class="badge bg-success">Учащиеся</span>
+                                                        {% endif %}
+                                                    </li>
                                                 {% endif %}
                                             {% endfor %}
                                         </ul>
