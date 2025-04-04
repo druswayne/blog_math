@@ -151,6 +151,27 @@ document.addEventListener('DOMContentLoaded', function() {
         achievementsToggleButton.addEventListener('click', function() {
             achievementsContent.classList.toggle('expanded');
             achievementsToggleButton.classList.toggle('expanded');
+            
+            // Если содержимое развернуто, прокручиваем к началу секции достижений
+            if (achievementsContent.classList.contains('expanded')) {
+                setTimeout(function() {
+                    const achievementsHeading = document.querySelector('.achievements-container').previousElementSibling;
+                    if (achievementsHeading) {
+                        achievementsHeading.scrollIntoView({behavior: 'smooth'});
+                    }
+                }, 300);
+            }
+            
+            // Изменяем текст кнопки
+            if (achievementsContent.classList.contains('expanded')) {
+                this.querySelector('i').classList.remove('fa-chevron-down');
+                this.querySelector('i').classList.add('fa-chevron-up');
+                this.innerHTML = this.innerHTML.replace('Показать все', 'Свернуть');
+            } else {
+                this.querySelector('i').classList.remove('fa-chevron-up');
+                this.querySelector('i').classList.add('fa-chevron-down');
+                this.innerHTML = this.innerHTML.replace('Свернуть', 'Показать все');
+            }
         });
     }
 
@@ -162,6 +183,27 @@ document.addEventListener('DOMContentLoaded', function() {
         experienceToggleButton.addEventListener('click', function() {
             experienceContent.classList.toggle('expanded');
             experienceToggleButton.classList.toggle('expanded');
+            
+            // Если содержимое развернуто, прокручиваем к началу секции опыта
+            if (experienceContent.classList.contains('expanded')) {
+                setTimeout(function() {
+                    const experienceHeading = document.querySelector('.experience-container').previousElementSibling;
+                    if (experienceHeading) {
+                        experienceHeading.scrollIntoView({behavior: 'smooth'});
+                    }
+                }, 300);
+            }
+            
+            // Изменяем текст кнопки
+            if (experienceContent.classList.contains('expanded')) {
+                this.querySelector('i').classList.remove('fa-chevron-down');
+                this.querySelector('i').classList.add('fa-chevron-up');
+                this.innerHTML = this.innerHTML.replace('Показать все', 'Свернуть');
+            } else {
+                this.querySelector('i').classList.remove('fa-chevron-up');
+                this.querySelector('i').classList.add('fa-chevron-down');
+                this.innerHTML = this.innerHTML.replace('Свернуть', 'Показать все');
+            }
         });
     }
 });

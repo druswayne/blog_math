@@ -278,7 +278,7 @@ body {
 }
 
 .achievements-content.expanded {
-    max-height: 1000px;
+    max-height: none;
 }
 
 .achievements-content::after {
@@ -335,7 +335,7 @@ body {
 }
 
 .experience-content.expanded {
-    max-height: 1000px;
+    max-height: none;
 }
 
 .experience-content::after {
