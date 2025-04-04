@@ -96,7 +96,16 @@
                                             {% for achievement in author_info.achievements %}
                                                 {% if achievement.year == year %}
                                                     <li>
-                                                        <strong>{{ achievement.title }}</strong> - {{ achievement.result }}
+                                                        <strong>{{ achievement.title }}</strong> - 
+                                                        {% if 'Диплом 1 степени' in achievement.result %}
+                                                            <span class="badge bg-warning text-dark">{{ achievement.result }}</span>
+                                                        {% elif 'Диплом 2 степени' in achievement.result %}
+                                                            <span class="badge bg-secondary text-white">{{ achievement.result }}</span>
+                                                        {% elif 'Диплом 3 степени' in achievement.result %}
+                                                            <span class="badge bg-danger text-white">{{ achievement.result }}</span>
+                                                        {% else %}
+                                                            {{ achievement.result }}
+                                                        {% endif %}
                                                         {% if achievement.is_personal %}
                                                             <span class="badge bg-primary">Личное</span>
                                                         {% else %}
